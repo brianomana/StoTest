@@ -1,6 +1,6 @@
 {
-	"name": "helloworld",
-	"displayName": "HelloWorld",
+	"name": "stogitresponse",
+	"displayName": "StoGitResponse",
 	"description": "LEAVE BLANK",
 	"version": "0.0.1",
 	"engines": {
@@ -10,14 +10,14 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:helloworld.helloWorld"
+		"onCommand:stogitresponse.addTest"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "helloworld.helloWorld",
-				"title": "Hello World"
+				"command": "stogitresponse.addTest",
+				"title": "Add Test"
 			}
 		],
 		"viewsContainers": {
@@ -32,7 +32,7 @@
 		  "views": {
 			"stogitresponse": [
 			  {
-				"id": "stogiresponse-createtests",
+				"id": "stogitresponse-createtests",
 				"name": "Create Tests"
 			  },
 			  {
@@ -40,7 +40,17 @@
 				  "name": "My Tests"
 			  }
 			]
-		  }
+		  },
+		  "viewsWelcome": [
+			{
+				"view": "stogitresponse-createtests",
+				"contents": "[Add Test](command:stogitresponse.addTest)"
+			},
+			{
+			  "view": "stogitresponse-mytests",
+			  "contents": "No tests found."
+			}
+		  ]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
