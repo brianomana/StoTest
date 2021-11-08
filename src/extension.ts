@@ -17,20 +17,17 @@ export function activate(context: vscode.ExtensionContext) {
 			testProvider.addTest();
 		}));
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('stogitresponse.myTest', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Successfully added test!');
-		vscode.window.showInputBox({
-			title: "Add Test",
-			placeHolder: "Test Name"
-		});
-	});
-
-	context.subscriptions.push(disposable);
+	context.subscriptions.push(
+		vscode.commands.registerCommand('stogitresponse.myTest', () => {
+			// The code you place here will be executed every time your command is executed
+			// Display a message box to the user
+			vscode.window.showInformationMessage('Successfully added test!');
+			vscode.window.showInputBox({
+				title: "Add Test",
+				placeHolder: "Test Name"
+			});
+		})
+	);
 }
 
 class TestsViewProvider implements vscode.WebviewViewProvider {
@@ -69,10 +66,10 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 						vscode.window.showInformationMessage('Add test button pushed!');
 						break;
 					}
-				case 'test':
+				case 'input':
 					{
-						vscode.window.showInformationMessage('class exists');
-						console.log('class exists');
+						vscode.window.showInformationMessage('got input');
+						console.log(data.value);
 						break;
 					}
 			}
@@ -120,7 +117,7 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 				<title>Cat Colors</title>
 			</head>
 			<body>
-				<input placeholder="Input"></input>
+				<input placeholder="Input" class="input1"></input>
 				<input placeholder="Expected Output"></input>
 				<button class="add-test-button">Add Test</button>
 				<script nonce="${nonce}" src="${scriptUri}"></script>

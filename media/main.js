@@ -3,12 +3,18 @@
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
 (function () {
+    // @ts-ignore
     const vscode = acquireVsCodeApi();
 
     
     //1? This seems to be the issue... It is never triggered
     document.querySelector('.add-test-button').addEventListener('click', () => {
         addTest();
+        const el = document.querySelector('.input1');
+        const val = el.value;
+        el.value = '';
+        vscode.postMessage({ type: 'input', value: val });
+
     });
 
     // Handle messages sent from the extension to the webview
