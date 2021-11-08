@@ -11,13 +11,10 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider(TestsViewProvider.viewType, testProvider));
 
-	console.log('Test');
 	context.subscriptions.push(
 		//This doesn't matter??
 		vscode.commands.registerCommand('stogitresponse.addTest', () => {
-			console.log('Add test button pushed');
-			vscode.window.showInformationMessage('Add Test Button Pushed');
-			//testProvider.addTest();
+			testProvider.addTest();
 		}));
 
 	// The command has been defined in the package.json file
@@ -66,11 +63,6 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 
 		webviewView.webview.onDidReceiveMessage(data => {
 			switch (data.type) {
-				case 'colorSelected':
-					{
-						vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`#${data.value}`));
-						break;
-					}
 				//3?
 				case 'addTest':
 					{
@@ -87,28 +79,14 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 		});
 	}
 
-	// public addColor() {
-	// 	if (this._view) {
-	// 		this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
-	// 		this._view.webview.postMessage({ type: 'addColor' });
-	// 	}
-	// }
-
-	// public clearColors() {
-	// 	if (this._view) {
-	// 		this._view.webview.postMessage({ type: 'clearColors' });
-	// 	}
-	// }
-
-	// public addTest() {
-	// 	if (this._view) {
-	// 		console.log("success");
-	// 		this._view.show?.(true);
-	// 		this._view.webview.postMessage({ type: 'addTest' });
-	// 	} else {
-	// 		console.log("failure");
-	// 	}
-	// }
+	public addTest() {
+		if (this._view) {
+			this._view.show?.(true);
+			this._view.webview.postMessage({ type: 'addTest' });
+		} else {
+			console.log("failure");
+		}
+	}
 
 	private _getHtmlForWebview(webview: vscode.Webview) {
 		// Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
