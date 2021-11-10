@@ -117,6 +117,12 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 				<title>Cat Colors</title>
 			</head>
 			<body>
+				<input placeholder="Test Name" class="test-name"></input>
+				<label for="functions">Function:</label>
+				<select name="functions" id="functions" class="functions">
+					<option value="test">---</option>
+					<option value="factorial">Factorial</option>
+				</select>
 				<input placeholder="Input" class="input1"></input>
 				<input placeholder="Expected Output"></input>
 				<button class="add-test-button">Add Test</button>
