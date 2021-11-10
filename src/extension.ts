@@ -121,7 +121,6 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 				<label for="functions">Function:</label>
 				<select name="functions" id="functions" class="functions">
 					<option value="test">---</option>
-					<option value="factorial">Factorial</option>
 				</select>
 				<input placeholder="Input" class="input1"></input>
 				<input placeholder="Expected Output"></input>
