@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import {PythonShell} from 'python-shell';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -60,7 +61,6 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 
 		webviewView.webview.onDidReceiveMessage(data => {
 			switch (data.type) {
-				//3?
 				case 'addTest':
 					{
 						vscode.window.showInformationMessage('Add test button pushed!');
@@ -70,6 +70,11 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 					{
 						vscode.window.showInformationMessage('got input');
 						console.log(data.value);
+						break;
+					}
+				case 'functionNames':
+					{
+						this.functionNames();
 						break;
 					}
 			}
@@ -84,6 +89,40 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 			console.log("failure");
 		}
 	}
+
+	public sendFuntionNames(names: any) {
+		if (this._view) {
+			this._view.show?.(true);
+			this._view.webview.postMessage({ type: 'functionNames', value: names });
+		} else {
+			console.log("failure");
+		}
+	}
+
+	public async functionNames() {
+		if (vscode.workspace.workspaceFolders !== undefined) {
+			// Workspace Directory: vscode.workspace.workspaceFolders[0].uri.path
+			// Extension Path: context.extensionUri.path
+			var workspaceDir = vscode.workspace.workspaceFolders[0].uri.path;
+			var funnamesPyPath = this._extensionUri.path + '/src/scripts/function-names.py';
+			var names: string[];
+
+			names = await new Promise((resolve, reject) => {
+				PythonShell.run(funnamesPyPath, { args: [workspaceDir] }, function (err, results) {
+					if (err) throw err;
+					// results is an array consisting of messages collected during execution
+					if (results !== undefined) {
+						resolve(results);
+					} else {
+						console.log("No return");
+					}
+				});
+			});
+			
+			this.sendFuntionNames(names);
+		} // Add case if there is no open workspace
+	}
+
 
 	private _getHtmlForWebview(webview: vscode.Webview) {
 		// Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.

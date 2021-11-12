@@ -5,15 +5,7 @@
 (function () {
     // @ts-ignore
     const vscode = acquireVsCodeApi();
-
-    // This is how to populate select dropdown
-    const select = document.getElementById('functions');
-    var option = document.createElement('option');
-    option.text = "factorial";
-    // @ts-ignore
-    select.add(option, 1);
     
-    //1? This seems to be the issue... It is never triggered
     document.querySelector('.add-test-button').addEventListener('click', () => {
         addTest();
 
@@ -36,12 +28,30 @@
                     addTest();
                     break;
                 }
+            case 'functionNames':
+                {
+                    populateFunctionNames(message.value);
+                    break;
+                }
         }
     });
 
-    //2?
+    // Populate drop down when webview is activated
+    vscode.postMessage({ type: 'functionNames' });
+
     function addTest() {
         vscode.postMessage({ type: 'addTest' });
+    }
+
+    function populateFunctionNames(names) {
+        // This is how to populate select dropdown
+        const select = document.getElementById('functions');
+        for (let i = 0; i < names.length; i++) {
+            var option = document.createElement('option');
+            option.text = names[i];
+            // @ts-ignore
+            select.add(option, i+1);
+        }  
     }
 }());
 
