@@ -107,9 +107,16 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 			var funnamesPyPath = this._extensionUri.path + '/src/scripts/function-names.py';
 			var names: string[];
 
+			// Windows fix
+			// funnamesPyPath = funnamesPyPath.replace('c:/','');
+			// workspaceDir = workspaceDir.replace('/c','c');
+
 			names = await new Promise((resolve, reject) => {
 				PythonShell.run(funnamesPyPath, { args: [workspaceDir] }, function (err, results) {
-					if (err) throw err;
+					console.log(funnamesPyPath);
+					if (err) {
+						throw err;
+					}
 					// results is an array consisting of messages collected during execution
 					if (results !== undefined) {
 						resolve(results);
@@ -118,7 +125,6 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 					}
 				});
 			});
-			
 			this.sendFuntionNames(names);
 		} // Add case if there is no open workspace
 	}
