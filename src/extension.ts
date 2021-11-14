@@ -113,7 +113,6 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 
 			names = await new Promise((resolve, reject) => {
 				PythonShell.run(funnamesPyPath, { args: [workspaceDir] }, function (err, results) {
-					console.log(funnamesPyPath);
 					if (err) {
 						throw err;
 					}
