@@ -6,17 +6,35 @@
     // @ts-ignore
     const vscode = acquireVsCodeApi();
     
+    // This pulls all the values within the Add Test treeview
     document.querySelector('.add-test-button').addEventListener('click', () => {
-        addTest();
+        //addTest();
 
-        // This is how to clear input
-        const el = document.querySelector('.input1');
+        // Test Name
+        const testName = document.querySelector('.test-name');
         // @ts-ignore
-        const val = el.value;
+        const val = testName.value;
         // @ts-ignore
-        el.value = '';
-        vscode.postMessage({ type: 'input', value: val });
+        testName.value = '';
 
+        //Function Definition
+
+        // Input
+        const input = document.querySelector('.input1');
+        // @ts-ignore
+        const val1 = input.value;
+        // @ts-ignore
+        input.value = '';
+
+        // Output
+        const output = document.querySelector('.output1');
+        // @ts-ignore 
+        const val2 = output.value;
+        // @ts-ignore
+        output.value = '';
+
+        vscode.postMessage({ type: 'addTest', testName: val, input: val1, output: val2});
+        
     });
 
     // Handle messages sent from the extension to the webview
@@ -49,6 +67,7 @@
         for (let i = 0; i < names.length; i++) {
             var option = document.createElement('option');
             option.text = names[i];
+            // Maybe add the function definition as the value to pull def quicker?
             // @ts-ignore
             select.add(option, i+1);
         }  
