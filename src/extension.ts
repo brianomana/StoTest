@@ -13,12 +13,6 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.registerWebviewViewProvider(TestsViewProvider.viewType, testProvider));
 
 	context.subscriptions.push(
-		//This doesn't matter??
-		vscode.commands.registerCommand('stogitresponse.addTest', () => {
-			testProvider.addTest();
-		}));
-
-	context.subscriptions.push(
 		vscode.commands.registerCommand('stogitresponse.myTest', () => {
 			// The code you place here will be executed every time your command is executed
 			// Display a message box to the user
@@ -63,13 +57,12 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 			switch (data.type) {
 				case 'addTest':
 					{
-						//vscode.window.showInformationMessage('Add test button pushed!');
-						break;
-					}
-				case 'input':
-					{
-						vscode.window.showInformationMessage('Test Created: '+data.value);
-						console.log(data.value);
+						vscode.window.showInformationMessage('Add test button pushed!');
+						console.log(data.testName);
+						//console.log(data.function);
+						console.log(data.input);
+						console.log(data.output);
+						// Function to create/check for unit test and write tests
 						break;
 					}
 				case 'functionNames':
@@ -81,12 +74,19 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 		});
 	}
 
-	public addTest() {
-		if (this._view) {
-			this._view.show?.(true);
-			this._view.webview.postMessage({ type: 'addTest' });
-		} else {
-			console.log("failure");
+
+	public createUnitTest(testName: any, functionDef: any, input: any, output: any) {
+		if (vscode.workspace.workspaceFolders !== undefined) {
+			// Workspace Directory: vscode.workspace.workspaceFolders[0].uri.path
+			// Extension Path: context.extensionUri.path
+			var workspaceDir = vscode.workspace.workspaceFolders[0].uri.path;
+			// var SCRIPT = this._extensionUri.path + '/src/scripts/SCRIPT.py';
+
+			// Windows fix
+			// scriptnamePath = scriptnamePath.replace('c:/','');
+			// workspaceDir = workspaceDir.replace('/c','c');
+
+
 		}
 	}
 
@@ -107,9 +107,15 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 			var funnamesPyPath = this._extensionUri.path + '/src/scripts/function-names.py';
 			var names: string[];
 
+			// Windows fix
+			// funnamesPyPath = funnamesPyPath.replace('c:/','');
+			// workspaceDir = workspaceDir.replace('/c','c');
+
 			names = await new Promise((resolve, reject) => {
 				PythonShell.run(funnamesPyPath, { args: [workspaceDir] }, function (err, results) {
-					if (err) {throw err;}
+					if (err) {
+						throw err;
+					}
 					// results is an array consisting of messages collected during execution
 					if (results !== undefined) {
 						resolve(results);
@@ -118,7 +124,6 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 					}
 				});
 			});
-			
 			this.sendFuntionNames(names);
 		} // Add case if there is no open workspace
 	}
@@ -161,8 +166,8 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 				<select name="functions" id="functions" class="functions">
 					<option value="default">---</option>
 				</select>
-				<input placeholder="Input" class="input-field"></input>
-				<input placeholder="Expected Output" class="output-field"></input>
+				<input placeholder="Input" class="input1"></input>
+				<input placeholder="Expected Output" class="output1"></input>
 				<button class="add-test-button">Add Test</button>
 				<script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
