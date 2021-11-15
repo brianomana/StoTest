@@ -63,12 +63,12 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 			switch (data.type) {
 				case 'addTest':
 					{
-						vscode.window.showInformationMessage('Add test button pushed!');
+						//vscode.window.showInformationMessage('Add test button pushed!');
 						break;
 					}
 				case 'input':
 					{
-						vscode.window.showInformationMessage('got input');
+						vscode.window.showInformationMessage('Test Created: '+data.value);
 						console.log(data.value);
 						break;
 					}
@@ -109,7 +109,7 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 
 			names = await new Promise((resolve, reject) => {
 				PythonShell.run(funnamesPyPath, { args: [workspaceDir] }, function (err, results) {
-					if (err) throw err;
+					if (err) {throw err;}
 					// results is an array consisting of messages collected during execution
 					if (results !== undefined) {
 						resolve(results);
@@ -159,10 +159,10 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 				<input placeholder="Test Name" class="test-name"></input>
 				<label for="functions">Function:</label>
 				<select name="functions" id="functions" class="functions">
-					<option value="test">---</option>
+					<option value="default">---</option>
 				</select>
-				<input placeholder="Input" class="input1"></input>
-				<input placeholder="Expected Output"></input>
+				<input placeholder="Input" class="input-field"></input>
+				<input placeholder="Expected Output" class="output-field"></input>
 				<button class="add-test-button">Add Test</button>
 				<script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>

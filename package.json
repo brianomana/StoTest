@@ -51,7 +51,7 @@
 		"viewsWelcome": [
 			{
 				"view": "stogitresponse-mytests",
-				"contents": "No tests found.\n[My Test](command:stogitresponse.myTest)"
+				"contents": "No tests found."
 			}
 		]
 	},

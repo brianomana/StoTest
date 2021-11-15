@@ -10,12 +10,27 @@
         addTest();
 
         // This is how to clear input
-        const el = document.querySelector('.input1');
+        const nameField = document.querySelector('.test-name');
+        const functionMenu = document.querySelector('.functions');
+        const inputField = document.querySelector('.input-field');
+        const outputField = document.querySelector('.output-field');
         // @ts-ignore
-        const val = el.value;
+        const nameVal = nameField.value;
         // @ts-ignore
-        el.value = '';
-        vscode.postMessage({ type: 'input', value: val });
+        const functionVal = functionMenu.value;
+        // @ts-ignore
+        const inputVal = inputField.value;
+        // @ts-ignore
+        const outputVal = outputField.value;
+        // @ts-ignore
+        nameField.value = '';
+        // @ts-ignore
+        functionMenu.value = 'default';
+        // @ts-ignore
+        inputField.value = '';
+        // @ts-ignore
+        outputField.value = '';
+        vscode.postMessage({ type: 'input', value: [nameVal, functionVal, inputVal, outputVal] });
 
     });
 
