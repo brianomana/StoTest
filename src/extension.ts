@@ -85,7 +85,7 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 			// Windows fix
 			// scriptnamePath = scriptnamePath.replace('c:/','');
 			// workspaceDir = workspaceDir.replace('/c','c');
-			
+
 
 		}
 	}
@@ -108,8 +108,8 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 			var names: string[];
 
 			// Windows fix
-			funnamesPyPath = funnamesPyPath.replace('c:/','');
-			workspaceDir = workspaceDir.replace('/c','c');
+			// funnamesPyPath = funnamesPyPath.replace('c:/','');
+			// workspaceDir = workspaceDir.replace('/c','c');
 
 			names = await new Promise((resolve, reject) => {
 				PythonShell.run(funnamesPyPath, { args: [workspaceDir] }, function (err, results) {
