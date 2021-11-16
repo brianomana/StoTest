@@ -59,10 +59,11 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 					{
 						vscode.window.showInformationMessage('Add test button pushed!');
 						console.log(data.testName);
-						//console.log(data.function);
+						//console/log(data.functionName)
+						//console.log(data.functionDef);
 						console.log(data.input);
 						console.log(data.output);
-						// Function to create/check for unit test and write tests
+						//this.createUnitTest(data.testName, data.functionName, data.functionDef, data.input, data.output);
 						break;
 					}
 				case 'functionNames':
@@ -75,18 +76,27 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 	}
 
 
-	public createUnitTest(testName: any, functionName: any, functionDef: any, input: any, output: any) {
+	public async createUnitTest(testName: any, functionName: any, functionDef: any, input: any, output: any) {
 		if (vscode.workspace.workspaceFolders !== undefined) {
 			// Workspace Directory: vscode.workspace.workspaceFolders[0].uri.path
 			// Extension Path: context.extensionUri.path
 			var workspaceDir = vscode.workspace.workspaceFolders[0].uri.path;
-			// var SCRIPT = this._extensionUri.path + '/src/scripts/SCRIPT.py';
+			var writetestsPypath = this._extensionUri.path + '/src/scripts/writeTests.py';
+			var filename = '';
 
 			// Windows fix
 			// scriptnamePath = scriptnamePath.replace('c:/','');
 			// workspaceDir = workspaceDir.replace('/c','c');
 
-
+			filename = await new Promise((resolve, reject) => {
+				PythonShell.run(writetestsPypath, { args: [workspaceDir, testName, functionName, functionDef, input, output] }, function (err, results) {
+					if (err) {
+						throw err;
+					}
+					vscode.window.showInformationMessage('Successfully created test file');
+					
+				});
+			});
 		}
 	}
 
