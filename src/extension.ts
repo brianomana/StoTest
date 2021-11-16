@@ -75,7 +75,7 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 	}
 
 
-	public createUnitTest(testName: any, functionDef: any, input: any, output: any) {
+	public createUnitTest(testName: any, functionName: any, functionDef: any, input: any, output: any) {
 		if (vscode.workspace.workspaceFolders !== undefined) {
 			// Workspace Directory: vscode.workspace.workspaceFolders[0].uri.path
 			// Extension Path: context.extensionUri.path
