@@ -65,7 +65,14 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 						//console.log(data.functionDef);
 						console.log(data.input);
 						console.log(data.output);
-						//this.createUnitTest(data.testName, data.functionName, data.functionDef, data.input, data.output);
+						var functionDef = "";
+						for (var i = 0; i < this.functions.length; i++) {
+							if (this.functions[i].name === data.functionName) {
+								functionDef = this.functions[i].def;
+								console.log(functionDef);
+							}
+						}
+						this.createUnitTest(data.testName, data.functionName, functionDef, data.input, data.output);
 						break;
 					}
 				case 'functionNames':
