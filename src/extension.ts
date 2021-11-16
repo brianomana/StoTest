@@ -31,6 +31,8 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 
 	private _view?: vscode.WebviewView;
 
+	public functions: any[] = [];
+
 	constructor(
 		private readonly _extensionUri: vscode.Uri,
 	) { }
@@ -59,7 +61,7 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 					{
 						vscode.window.showInformationMessage('Add test button pushed!');
 						console.log(data.testName);
-						//console/log(data.functionName)
+						console.log(data.functionName)
 						//console.log(data.functionDef);
 						console.log(data.input);
 						console.log(data.output);
@@ -128,13 +130,20 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 					}
 					// results is an array consisting of messages collected during execution
 					if (results !== undefined) {
+						console.log(results);
 						resolve(results);
 					} else {
 						console.log("No return");
 					}
 				});
 			});
-			this.sendFuntionNames(names);
+
+			var functionlist: any[] = [];
+			for (var i = 0; i < names.length; i++) {
+				functionlist.push(JSON.parse(names[i]));
+			}
+			this.functions = functionlist; // Set global variable - might be needed elsewhere
+			this.sendFuntionNames(functionlist);
 		} // Add case if there is no open workspace
 	}
 
