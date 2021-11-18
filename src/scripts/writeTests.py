@@ -22,10 +22,67 @@ def createUnitTest(test_name, function_name, function_def, user_input, exp_outpu
     f.close()
     return testing_file
 
-
 def writeTests(function_name, f, user_input, exp_output):
     # Get and write subtest info
     f.write("\tEXPECT_EQ(" + function_name + "(" + user_input + "), " + exp_output + ");\n")
+
+def searchandaddTests(testing_file, test_name, function_name, function_def, user_input, exp_output):
+    # Hunt for test suite
+    searchLine = "TEST("+function_name+"Test, "+ test_name +")"
+    linetoedit = 0
+    suite_exists = False
+    with open(testing_file) as openfile:
+        for line in openfile:
+            linetoedit += 1
+            if searchLine in line:
+                suite_exists = True
+                break
+    
+    if suite_exists:
+        # Pull all lines
+        openfile = open(testing_file)
+        contents = openfile.readlines()
+        openfile.close()
+
+        # Adding test manually
+        contents.insert(linetoedit, "\tEXPECT_EQ(" + function_name + "(" + user_input + "), " + exp_output + ");\n")
+        openfile = open(testing_file, "w")
+        contents = "".join(contents)
+        openfile.write(contents)
+        openfile.close()
+    else:
+        linetoedit = 0
+        with open(testing_file) as openfile:
+            for line in openfile:
+                if "int main(int argc, char **argv) {" in line:
+                    break
+                linetoedit += 1
+
+        openfile = open(testing_file)
+        contents = openfile.readlines()
+        openfile.close()
+
+        contents.insert(linetoedit, "TEST("+function_name+"Test, "+ test_name +") {\n")
+        contents.insert(linetoedit+1, "\tEXPECT_EQ(" + function_name + "(" + user_input + "), " + exp_output + ");\n")
+        contents.insert(linetoedit+2, "}\n\n")
+
+        openfile = open(testing_file, "w")
+        contents = "".join(contents)
+        openfile.write(contents)
+        openfile.close()
+    
+
+
+
+    # lineNum = 0
+    # with open(testing_file, "w") as openfile:
+    #     for line in openfile:
+    #         if linetoedit == lineNum:
+    #             writeTests(function_name, openfile, user_input, exp_output)
+    #             next()
+    #         else:
+    #             next()
+
 
 # These will be the input when creating the file, but we also need to check if that file exists to see if only writing singular tests is the right move
 workspace_dir = sys.argv[1]
@@ -36,4 +93,12 @@ function_def = sys.argv[4]
 user_input = sys.argv[5]
 exp_output = sys.argv[6]
 
-testing_file = createUnitTest(test_name, function_name, function_def, user_input, exp_output)
+for file in glob.glob("*.cpp"):
+    if re.findall("_test.cpp$", file):
+        testing_file = file
+
+try:
+    testing_file
+    searchandaddTests(testing_file, test_name, function_name, function_def, user_input, exp_output)
+except NameError:
+    testing_file = createUnitTest(test_name, function_name, function_def, user_input, exp_output)
