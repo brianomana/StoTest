@@ -37,3 +37,4 @@ user_input = sys.argv[5]
 exp_output = sys.argv[6]
 
 testing_file = createUnitTest(test_name, function_name, function_def, user_input, exp_output)
+print(testing_file)

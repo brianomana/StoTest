@@ -8,9 +8,8 @@ def functionSearch(file_name):
                 if definition[-1] == '{':
                     definition = definition[:-1] # Remove open curly brace
                 name = re.findall(" .*\(", line)[0] # Gets function name
-                print("{ \"name\": \"" + name[1:-1] + "\", \"def\": \"" + definition + "\" }")
-                # print(name[1:-1])
-                # function_def = line.strip()
+                print("{ \"name\": \"" + name[1:-1] + "\", \"def\": \"" + definition + "\", \"file\": \"" + file_name +"\" }")
+                # Also include file name
 
 workspace_dir = sys.argv[1]
 os.chdir(workspace_dir)

@@ -11,19 +11,15 @@
 	],
 	"activationEvents": [
 		"onView:stogitresponse-createtests",
-		"onCommand:stogitresponse.addTest",
-		"onCommand:stogitresponse.myTest"
+		"onView:stogitresponse-mytests",
+		"onCommand:stogitresponse.runTest"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "stogitresponse.addTest",
-				"title": "Add Test"
-			},
-			{
-				"command": "stogitresponse.myTest",
-				"title": "My Test"
+				"command": "stogitresponse.runTest",
+				"title": "Run Tests"
 			}
 		],
 		"viewsContainers": {
@@ -43,17 +39,12 @@
 					"name": "Create Tests"
 				},
 				{
+					"type": "webview",
 					"id": "stogitresponse-mytests",
 					"name": "My Tests"
 				}
 			]
-		},
-		"viewsWelcome": [
-			{
-				"view": "stogitresponse-mytests",
-				"contents": "No tests found."
-			}
-		]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
