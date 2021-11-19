@@ -56,7 +56,7 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 					{
 						vscode.window.showInformationMessage('Add test button pushed!');
 						console.log(data.testName);
-						console.log(data.functionName)
+						console.log(data.functionName);
 						//console.log(data.functionDef);
 						console.log(data.input);
 						console.log(data.output);
@@ -89,7 +89,7 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 			var filename = '';
 
 			// Windows fix
-			// scriptnamePath = scriptnamePath.replace('c:/','');
+			// writetestsPath = writetestsPath.replace('c:/','');
 			// workspaceDir = workspaceDir.replace('/c','c');
 
 			filename = await new Promise((resolve, reject) => {
