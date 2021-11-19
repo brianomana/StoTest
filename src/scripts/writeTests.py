@@ -93,6 +93,7 @@ function_def = sys.argv[4]
 user_input = sys.argv[5]
 exp_output = sys.argv[6]
 
+
 for file in glob.glob("*.cpp"):
     if re.findall("_test.cpp$", file):
         testing_file = file
@@ -100,5 +101,7 @@ for file in glob.glob("*.cpp"):
 try:
     testing_file
     searchandaddTests(testing_file, test_name, function_name, function_def, user_input, exp_output)
+    print(testing_file)
 except NameError:
     testing_file = createUnitTest(test_name, function_name, function_def, user_input, exp_output)
+

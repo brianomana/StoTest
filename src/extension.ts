@@ -7,22 +7,15 @@ import {PythonShell} from 'python-shell';
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 	
-	const testProvider = new TestsViewProvider(context.extensionUri);
+	const myTestProvider = new MyTestsViewProvider(context.extensionUri);
+	const testProvider = new TestsViewProvider(context.extensionUri, myTestProvider);
 
 	context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider(TestsViewProvider.viewType, testProvider));
-
+	
 	context.subscriptions.push(
-		vscode.commands.registerCommand('stogitresponse.myTest', () => {
-			// The code you place here will be executed every time your command is executed
-			// Display a message box to the user
-			vscode.window.showInformationMessage('Successfully added test!');
-			vscode.window.showInputBox({
-				title: "Add Test",
-				placeHolder: "Test Name"
-			});
-		})
-	);
+		vscode.window.registerWebviewViewProvider(MyTestsViewProvider.viewType, myTestProvider));
+	
 }
 
 class TestsViewProvider implements vscode.WebviewViewProvider {
@@ -32,9 +25,11 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 	private _view?: vscode.WebviewView;
 
 	public functions: any[] = [];
+	public tests: string[] = [];
 
 	constructor(
 		private readonly _extensionUri: vscode.Uri,
+		private readonly _testWebview: MyTestsViewProvider,
 	) { }
 
 	public resolveWebviewView(
@@ -102,10 +97,16 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 					if (err) {
 						throw err;
 					}
+					if (results !== undefined) {
+						resolve(results[0]);
+					}
 					vscode.window.showInformationMessage('Successfully created test file');
 					
 				});
 			});
+			this.tests.push(testName);
+			this._testWebview.newTest(testName);
+			console.log("TESTS:" +this.tests);
 		}
 	}
 
@@ -137,7 +138,6 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 					}
 					// results is an array consisting of messages collected during execution
 					if (results !== undefined) {
-						console.log(results);
 						resolve(results);
 					} else {
 						console.log("No return");
@@ -150,7 +150,14 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 				functionlist.push(JSON.parse(names[i]));
 			}
 			this.functions = functionlist; // Set global variable - might be needed elsewhere
+			console.log(functionlist);
 			this.sendFuntionNames(functionlist);
+
+
+			// let functionMap = new Map();
+			// functionMap.set("factorial", "int factorial(int n)");
+			// console.log(functionMap);
+			
 		} // Add case if there is no open workspace
 	}
 
@@ -184,7 +191,7 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 				<link href="${styleVSCodeUri}" rel="stylesheet">
 				<link href="${styleMainUri}" rel="stylesheet">
 				
-				<title>Cat Colors</title>
+				<title>Create Tests</title>
 			</head>
 			<body>
 				<input placeholder="Test Name" class="test-name"></input>
@@ -195,6 +202,103 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 				<input placeholder="Input" class="input1"></input>
 				<input placeholder="Expected Output" class="output1"></input>
 				<button class="add-test-button">Add Test</button>
+				<script nonce="${nonce}" src="${scriptUri}"></script>
+			</body>
+			</html>`;
+	}
+}
+
+class MyTestsViewProvider implements vscode.WebviewViewProvider {
+
+	public static readonly viewType = 'stogitresponse-mytests';
+
+	private _view?: vscode.WebviewView;
+
+	public functions: any[] = [];
+	public tests: string[] = [];
+
+	constructor(
+		private readonly _extensionUri: vscode.Uri,
+	) { }
+
+	public resolveWebviewView(
+		webviewView: vscode.WebviewView,
+		context: vscode.WebviewViewResolveContext,
+		_token: vscode.CancellationToken,
+	) {
+		this._view = webviewView;
+
+		webviewView.webview.options = {
+			// Allow scripts in the webview
+			enableScripts: true,
+
+			localResourceRoots: [
+				this._extensionUri
+			]
+		};
+
+		webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+
+		webviewView.webview.onDidReceiveMessage(data => {
+			switch (data.type) {
+				case 'testNames':
+					{
+						vscode.window.showInformationMessage('Test Names');
+						break;
+					}
+				case 'runTest':
+					{
+						vscode.window.showInformationMessage('Running Tests');
+						break;
+					}
+			}
+		});
+	}
+
+	public newTest(name: string) {
+		if (this._view) {
+			this._view.show?.(true);
+			this._view.webview.postMessage({ type: 'addTest', value: name });
+		} else {
+			console.log("failure");
+		}
+	}
+
+	private _getHtmlForWebview(webview: vscode.Webview) {
+		// Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
+		const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'mytests.js'));
+
+		// Do the same for the stylesheet.
+		const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'reset.css'));
+		const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'vscode.css'));
+		const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.css'));
+
+		// Use a nonce to only allow a specific script to be run.
+		const nonce = getNonce();
+
+		return `<!DOCTYPE html>
+			<html lang="en">
+			<head>
+				<meta charset="UTF-8">
+
+				<!--
+					Use a content security policy to only allow loading images from https or from our extension directory,
+					and only allow scripts that have a specific nonce.
+				-->
+				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
+
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+				<link href="${styleResetUri}" rel="stylesheet">
+				<link href="${styleVSCodeUri}" rel="stylesheet">
+				<link href="${styleMainUri}" rel="stylesheet">
+				
+				<title>My Tests</title>
+			</head>
+			<body>
+				<ul class="tests-list">
+				</ul>
+
 				<script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
 			</html>`;
