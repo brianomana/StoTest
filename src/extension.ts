@@ -104,9 +104,13 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 					
 				});
 			});
-			this.tests.push(testName);
-			this._testWebview.newTest(testName);
+			if( !this.tests.includes(testName)) {
+				this.tests.push(testName);
+				this._testWebview.newTest(testName);
+			}
 			console.log("TESTS:" +this.tests);
+			
+			
 		}
 	}
 

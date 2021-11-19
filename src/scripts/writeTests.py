@@ -101,7 +101,8 @@ for file in glob.glob("*.cpp"):
 try:
     testing_file
     searchandaddTests(testing_file, test_name, function_name, function_def, user_input, exp_output)
-    print(testing_file)
 except NameError:
     testing_file = createUnitTest(test_name, function_name, function_def, user_input, exp_output)
+
+print(testing_file)
 
