@@ -31,10 +31,10 @@
             li.textContent = tests[i];
             ul.appendChild(li);
         }
+        vscode.setState({ tests: tests });
     }
 
     //tests = []; // Remove if you want tests to stay between runs
-    vscode.setState({ tests: tests });
     
 }());
 

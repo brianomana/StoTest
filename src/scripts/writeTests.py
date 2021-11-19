@@ -95,7 +95,7 @@ exp_output = sys.argv[6]
 
 
 for file in glob.glob("*.cpp"):
-    if re.findall("_test.cpp$", file):
+    if file == function_name+"_test.cpp":
         testing_file = file
 
 try:
