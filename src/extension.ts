@@ -3,6 +3,9 @@
 import * as vscode from 'vscode';
 import {PythonShell} from 'python-shell';
 
+var functions: any[] = [];
+var tests: string[] = [];
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -23,9 +26,6 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 	public static readonly viewType = 'stotest-createtests';
 
 	private _view?: vscode.WebviewView;
-
-	public functions: any[] = [];
-	public tests: string[] = [];
 
 	constructor(
 		private readonly _extensionUri: vscode.Uri,
@@ -61,9 +61,9 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 						console.log(data.input);
 						console.log(data.output);
 						var functionDef = "";
-						for (var i = 0; i < this.functions.length; i++) {
-							if (this.functions[i].name === data.functionName) {
-								functionDef = this.functions[i].def;
+						for (var i = 0; i < functions.length; i++) {
+							if (functions[i].name === data.functionName) {
+								functionDef = functions[i].def;
 								console.log(functionDef);
 							}
 						}
@@ -104,17 +104,18 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 					
 				});
 			});
-			if( !this.tests.includes(testName)) {
-				this.tests.push(testName);
+			if(!tests.includes(testName)) {
+				tests.push(testName);
 				this._testWebview.newTest(testName);
 			}
-			console.log("TESTS:" +this.tests);
+			console.log("TESTS:" +tests);
 			
 			
 		}
 	}
 
 	public sendFuntionNames(names: any) {
+		// Send to webview
 		if (this._view) {
 			this._view.show?.(true);
 			this._view.webview.postMessage({ type: 'functionNames', value: names });
@@ -128,7 +129,7 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 			// Workspace Directory: vscode.workspace.workspaceFolders[0].uri.path
 			// Extension Path: context.extensionUri.path
 			var workspaceDir = vscode.workspace.workspaceFolders[0].uri.path;
-			var funnamesPyPath = this._extensionUri.path + '/src/scripts/function-names.py';
+			var funnamesPyPath = this._extensionUri.path + '/src/scripts/functionNames.py';
 			var names: string[];
 
 			// Windows fix
@@ -153,14 +154,9 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 			for (var i = 0; i < names.length; i++) {
 				functionlist.push(JSON.parse(names[i]));
 			}
-			this.functions = functionlist; // Set global variable - might be needed elsewhere
+			functions = functionlist; // Set global variable - might be needed elsewhere
 			console.log(functionlist);
 			this.sendFuntionNames(functionlist);
-
-
-			// let functionMap = new Map();
-			// functionMap.set("factorial", "int factorial(int n)");
-			// console.log(functionMap);
 			
 		} // Add case if there is no open workspace
 	}
@@ -218,9 +214,6 @@ class MyTestsViewProvider implements vscode.WebviewViewProvider {
 
 	private _view?: vscode.WebviewView;
 
-	public functions: any[] = [];
-	public tests: string[] = [];
-
 	constructor(
 		private readonly _extensionUri: vscode.Uri,
 	) { }
@@ -245,14 +238,16 @@ class MyTestsViewProvider implements vscode.WebviewViewProvider {
 
 		webviewView.webview.onDidReceiveMessage(data => {
 			switch (data.type) {
-				case 'testNames':
-					{
-						vscode.window.showInformationMessage('Test Names');
-						break;
-					}
 				case 'runTest':
 					{
 						vscode.window.showInformationMessage('Running Tests');
+						console.log(data.testlist);
+						break;
+					}
+				case 'updateTestList':
+					{
+						tests = data.testlist;
+						console.log(tests);
 						break;
 					}
 			}
@@ -302,7 +297,7 @@ class MyTestsViewProvider implements vscode.WebviewViewProvider {
 			<body>
 				<ul class="tests-list">
 				</ul>
-
+				<button class="run-test-button">Run Tests</button>
 				<script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
 			</html>`;
