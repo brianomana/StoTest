@@ -1,6 +1,6 @@
 {
-	"name": "stogitresponse",
-	"displayName": "StoGitResponse",
+	"name": "stotest",
+	"displayName": "StoTest",
 	"description": "LEAVE BLANK",
 	"version": "0.0.1",
 	"engines": {
@@ -10,37 +10,37 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onView:stogitresponse-createtests",
-		"onView:stogitresponse-mytests",
-		"onCommand:stogitresponse.runTest"
+		"onView:stotest-createtests",
+		"onView:stotest-mytests",
+		"onCommand:stotest.runTest"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "stogitresponse.runTest",
+				"command": "stotest.runTest",
 				"title": "Run Tests"
 			}
 		],
 		"viewsContainers": {
 			"activitybar": [
 				{
-					"id": "stogitresponse",
-					"title": "StoGitResponse",
+					"id": "stotest",
+					"title": "StoTest",
 					"icon": "media/bigbox.svg"
 				}
 			]
 		},
 		"views": {
-			"stogitresponse": [
+			"stotest": [
 				{
 					"type": "webview",
-					"id": "stogitresponse-createtests",
+					"id": "stotest-createtests",
 					"name": "Create Tests"
 				},
 				{
 					"type": "webview",
-					"id": "stogitresponse-mytests",
+					"id": "stotest-mytests",
 					"name": "My Tests"
 				}
 			]

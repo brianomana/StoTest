@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 class TestsViewProvider implements vscode.WebviewViewProvider {
 
-	public static readonly viewType = 'stogitresponse-createtests';
+	public static readonly viewType = 'stotest-createtests';
 
 	private _view?: vscode.WebviewView;
 
@@ -214,7 +214,7 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 
 class MyTestsViewProvider implements vscode.WebviewViewProvider {
 
-	public static readonly viewType = 'stogitresponse-mytests';
+	public static readonly viewType = 'stotest-mytests';
 
 	private _view?: vscode.WebviewView;
 
