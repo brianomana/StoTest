@@ -8,7 +8,10 @@ def functionSearch(file_name):
                 if definition[-1] == '{':
                     definition = definition[:-1] # Remove open curly brace
                 name = re.findall(" .*\(", line)[0] # Gets function name
-                print("{ \"name\": \"" + name[1:-1] + "\", \"def\": \"" + definition + "\", \"file\": \"" + file_name +"\", \"tests\": false }")
+                if not glob.glob(name[1:-1] + "_test.cpp"):
+                    print("{ \"name\": \"" + name[1:-1] + "\", \"def\": \"" + definition + "\", \"file\": \"" + file_name +"\", \"tests\": false }")
+                else:
+                    print("{ \"name\": \"" + name[1:-1] + "\", \"def\": \"" + definition + "\", \"file\": \"" + file_name +"\", \"tests\": true }")
                 # Also include file name
 
 workspace_dir = sys.argv[1]

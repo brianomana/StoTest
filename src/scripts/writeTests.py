@@ -1,9 +1,9 @@
 import sys, os, glob, re
 
-def createUnitTest(test_name, function_name, function_def, user_input, exp_output):
+def createUnitTest(t, function_name, function_def, user_input, exp_output):
     # Create the test label related to function
     test_suite = function_name+"Test"
-
+    test_name = t.replace(" ", "_")
     # Create and write header stuff to the testing file
     # This doesn't work if there is an existing testing file! MUST DELETE FILE BEFORE RUNNING!
     testing_file = function_name.partition(".")[0]+"_test.cpp"

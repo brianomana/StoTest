@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, subprocess
 
 # Compile unit test file
 def compile(file_name, function_name, testing_file):
@@ -11,19 +11,17 @@ def compile(file_name, function_name, testing_file):
     # Create executable
     command = gpp + files + lib + exe
     print(command)
-    os.system("echo "+command)
-    os.system(command)
+    subprocess.Popen(command, cwd=workspace_dir, shell=True).wait()
 
 # Run tests
 def runTests(function_name):
-    print("echo "+"./"+function_name)
-    os.system("echo "+"./"+function_name)
-    os.system("./"+function_name+" > output.txt")
+    command = "./"+function_name+" > output.txt"
+    print(command)
+    subprocess.Popen(command, cwd=workspace_dir, shell=True).wait()
 
 
 # Main
 workspace_dir = sys.argv[1]
-os.chdir(workspace_dir)
 file_name = sys.argv[2]
 function_name = sys.argv[3]
 testing_file = sys.argv[4]
