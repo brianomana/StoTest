@@ -54,17 +54,11 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 			switch (data.type) {
 				case 'addTest':
 					{
-						vscode.window.showInformationMessage('Add test button pushed!');
-						console.log(data.testName);
-						console.log(data.functionName);
-						//console.log(data.functionDef);
-						console.log(data.input);
-						console.log(data.output);
 						var functionDef = "";
 						for (var i = 0; i < functions.length; i++) {
 							if (functions[i].name === data.functionName) {
 								functionDef = functions[i].def;
-								console.log(functionDef);
+								functions[i].tests = true;
 							}
 						}
 						this.createUnitTest(data.testName, data.functionName, functionDef, data.input, data.output);
@@ -100,17 +94,14 @@ class TestsViewProvider implements vscode.WebviewViewProvider {
 					if (results !== undefined) {
 						resolve(results[0]);
 					}
-					vscode.window.showInformationMessage('Successfully created test file');
+					vscode.window.showInformationMessage('Created Test');
 					
 				});
 			});
 			if(!tests.includes(testName)) {
 				tests.push(testName);
 				this._testWebview.newTest(testName);
-			}
-			console.log("TESTS:" +tests);
-			
-			
+			}						
 		}
 	}
 
@@ -241,7 +232,7 @@ class MyTestsViewProvider implements vscode.WebviewViewProvider {
 				case 'runTest':
 					{
 						vscode.window.showInformationMessage('Running Tests');
-						console.log(data.testlist);
+						this.runTests(data.testlist);
 						break;
 					}
 				case 'updateTestList':
@@ -261,6 +252,38 @@ class MyTestsViewProvider implements vscode.WebviewViewProvider {
 		} else {
 			console.log("failure");
 		}
+	}
+
+	public async runTests(tests: any) {
+		if (vscode.workspace.workspaceFolders !== undefined) {
+			var workspaceDir = vscode.workspace.workspaceFolders[0].uri.path;
+			var runtestsPyPath = this._extensionUri.path + '/src/scripts/runTests.py';
+			var ret: any;
+
+			for (var i = 0; i < functions.length; i++) {
+				if (functions[i].tests) {
+					console.log("MATCH");
+					var fileName = functions[i].file;
+					var functionName = functions[i].name;
+					var testingFile = functionName + "_test.cpp";
+					ret = await new Promise((resolve, reject) => {
+						PythonShell.run(runtestsPyPath, { args: [workspaceDir, fileName, functionName, testingFile] }, function (err, results) {
+							if (err) {
+								throw err;
+							}
+							// results is an array consisting of messages collected during execution
+							if (results !== undefined) {
+								resolve(results);
+								console.log(results);
+							} else {
+								console.log("No return");
+							}
+						});
+					});
+				}
+			}
+			
+		} // Need fix if workspace is undefined
 	}
 
 	private _getHtmlForWebview(webview: vscode.Webview) {

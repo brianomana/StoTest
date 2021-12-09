@@ -8,7 +8,7 @@ def functionSearch(file_name):
                 if definition[-1] == '{':
                     definition = definition[:-1] # Remove open curly brace
                 name = re.findall(" .*\(", line)[0] # Gets function name
-                print("{ \"name\": \"" + name[1:-1] + "\", \"def\": \"" + definition + "\", \"file\": \"" + file_name +"\" }")
+                print("{ \"name\": \"" + name[1:-1] + "\", \"def\": \"" + definition + "\", \"file\": \"" + file_name +"\", \"tests\": false }")
                 # Also include file name
 
 workspace_dir = sys.argv[1]

@@ -18,7 +18,7 @@ def compile(file_name, function_name, testing_file):
 def runTests(function_name):
     print("echo "+"./"+function_name)
     os.system("echo "+"./"+function_name)
-    os.system("./"+function_name)
+    os.system("./"+function_name+" > output.txt")
 
 
 # Main
