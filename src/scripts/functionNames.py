@@ -3,7 +3,7 @@ import sys, os, glob, re
 def functionSearch(file_name):
     with open(file_name) as openfile:
         for line in openfile:
-            if re.findall("^(int).*\(...*\)", line): # Need better regex than this probably?
+            if re.findall("^[(int)|(double)|(float)|(bool)|(char*)].*\(...*\)", line): # Need better regex than this probably?
                 definition = line.strip() # Remove newline character
                 if definition[-1] == '{':
                     definition = definition[:-1] # Remove open curly brace
