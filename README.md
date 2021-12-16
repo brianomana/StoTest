@@ -9,3 +9,10 @@ Here are some useful resources to get started contributing to StoTest.
 ### Developing a VS Code Extension
 
 ### Integrating StoGrade
+
+## Running the StoTest Locally
+
+* Clone this repo
+* Open within VS Code
+* Run `npm install`
+* Press F5 to open Extension Development Host window
